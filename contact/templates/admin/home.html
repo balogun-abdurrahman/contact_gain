@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContactVault - Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fa/css/all.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7ff;
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background: #0052cc;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      display: block;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background: #003d99;
+    }
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+    h1 {
+      color: #0052cc;
+    }
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .card {
+      background: white;
+      flex: 1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #0052cc;
+      color: white;
+    }
+    tr:hover {
+      background: #f3f6ff;
+    }
+    .download-btn {
+      background: #0052cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .download-btn:hover {
+      background: #003d99;
+    }
+    .wid{
+      width: 18%;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Dashboard</h2>
+    <a href="/#form">Upload Contact</a>
+    {% if vcf_stat == "Inactive" %}
+      <a href="/activate_vcf/">Activate VCF</a>     
+      {% elif vcf_stat == "Active" %}
+      <a href="/deactivate_vcf/">Deactivate VCF</a>
+      {% endif %}
+    
+    <a href="/download_vcf/">Download .VCF</a>
+    <a href="#">Logout</a>
+    
+  </div>
+
+  <div class="main">
+    <h1>Welcome to Your Dashboard</h1>
+    {% set message = get_flashed_messages(with_categories=True) %}
+        {% if message %}
+          {% for msg,cat in message %}
+            {% if cat == "errormsg" %}
+              <div class="alert alert-danger ">{{ msg }}</div>
+            {% else%}
+            <div class="alert alert-success ">{{ msg }}</div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+    <div class="stats">
+      <div class="card">
+        <h3>Total Contacts</h3>
+        <p><strong>{{lenn}}</strong></p>
+      </div>
+      <div class="card">
+        <h3>Unique Users</h3>
+        <p><strong>{{lenn}}</strong></p>
+      </div>
+      <div class="card">
+        <h3>Last Upload</h3>
+        <p>Dec 1, 2026</p>
+      </div>
+    </div>
+
+    <h2>Uploaded Contacts</h2>
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Full Name</th>
+        <th>Phone Number</th>
+        <th>user email</th>
+        <th>created on</th>
+      </tr>
+
+      {% for u in user %}
+      <tr>
+        <td>{{u.user_id}}</td>
+        <td>{{u.user_fullname}}</td>
+        <td>{{u.user_number}}</td>
+        <td>{{u.user_email}}</td>
+        <td>{{u.created_on}}</td>
+      </tr>
+      {% endfor %}
+
+    </table>
+
+    <a href="/download_vcf/" class="download-btn wid">Download Contacts (.vcf)</a>
+  </div>
+  
+ 
+</body>
+</html>

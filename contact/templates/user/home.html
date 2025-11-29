@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Gain - User Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fa/css/all.css">
+</head>
+<body>
+  <header>Contact Gain</header>
+
+  <div class="container">
+    <h2>Welcome, User 👋</h2>
+    <p style="text-align:center; color:#555;">Here’s an overview of your contact uploads and updates.</p>
+
+    <div class="stats">
+      <div class="card">
+        <h3>Contacts Uploaded</h3>
+        <p><strong> {{ lent }} </strong></p>
+      </div>
+      <div class="card">
+        <h3>Upload Date</h3>
+        <p>Dec 1, 2026</p>
+      </div>
+
+      {% if vcf_stat == "Inactive" %}
+      <div class="card">
+              <h3>Status</h3>
+              <p style="color: #ffa500;"><strong>VCF Processing...</strong></p>
+            </div>
+          </div>
+
+          <div class="notify">
+            📢 The downloadable <strong>.vcf file</strong> is not yet available.  
+            Join our WhatsApp channel below to get notified immediately when it’s ready.
+          </div>
+      {% elif vcf_stat == "Active" %}
+      <div class="card">
+        <h3>Status</h3>
+        <p style="color: #6cff69;"><strong>VCF Available...</strong></p>
+      </div>
+    </div>
+
+    <div class="notifyi">
+      📢 The <strong>.vcf file</strong> is now available for download. Click the button below to download it instantly. Stay active on our Whatsapp channel to get updates on the next contact-gain session </button> </div>
+      {% endif %}
+
+      
+
+    <button id="followBtn" class="follow-btn">
+      🔔 Follow WhatsApp Channel
+    </button>
+
+    <button class="download-btn" disabled>
+      ⏳ Download Contacts (.vcf)
+    </button>
+
+    <section class="carde">
+      <div class="card-header">
+          <h2 class="card-title">Upload Contacts</h2>
+      </div>
+      <div class="upload-section">
+         
+        {% set message = get_flashed_messages(with_categories=True) %}
+        {% if message %}
+          {% for msg,cat in message %}
+            {% if cat == "errormsg" %}
+              <div class="alert alert-danger ">{{ msg }}</div>
+            {% else%}
+            <div class="alert alert-success ">{{ msg }}</div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        <p id="errorMsg" style="display: none;" class="alert alert-danger">
+        </p>
+        <form action="/contact_upload/" id="form" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="form-group">
+         
+              <input type="text" id="fullname"  name="fullname" class="form-control" placeholder="Full Name">
+          </div>
+          <div class="form-group">
+              <input type="text" id="email" name="email" class="form-control" placeholder="Email Address">
+          </div>
+          <div class="form-group">
+              <input type="text" id="number" name="number" class="form-control" placeholder="Phone Number">
+          </div>
+          <button class="btn">Add Contact</button>
+        </form>
+      </div>
+  </section>
+  </div>
+
+  <section class="cardef">
+    <div class="export-section">
+        <div class="export-text fct">
+            <i class="fas fa-file-export"></i> Export all contacts to VCF file
+        </div>
+        <a href="/download_vcf/" class="btn fct btn-success btn-i">
+            <i class="fas fa-download"></i> Download VCF
+        </a>
+    </div>
+</section>
+
+  <footer>
+    &copy; 2025 Codex | All rights reserved
+  </footer>
+
+
+
+  <script>
+
+    followed = false
+
+    document.getElementById("followBtn").onclick = function() {
+      window.open("https://whatsapp.com/channel/0029VbBzGsxK5cDGsVA3xW1v", "_blank");
+      followed = true;
+    }; 
+    const form = document.querySelector("form")
+    form.addEventListener("submit", function(event) {
+      const fullname = document.getElementById("fullname").value;
+      const email = document.getElementById("email").value;
+      const number = document.getElementById("number").value;
+
+      if (fullname.trim() == ""){
+        document.getElementById("errorMsg").textContent = "please enter your fullname"
+        document.getElementById("errorMsg").style.display = "block"
+        event.preventDefault();
+        
+      } else if (number.trim() == ""){
+        document.getElementById("errorMsg").textContent = "please enter your phone number"
+        document.getElementById("errorMsg").style.display = "block"
+        event.preventDefault();
+      } else if (email.trim() == ""){
+        document.getElementById("errorMsg").textContent = "please enter your email address"
+        document.getElementById("errorMsg").style.display = "block"
+        event.preventDefault();
+      } else if (!followed) {
+        document.getElementById("errorMsg").textContent = "You must follow the WhatsApp channel above before you can add contacts. So you can get updates on your contact gain session"
+        document.getElementById("errorMsg").style.display = "block";
+        event.preventDefault();
+      }
+      }
+    
+    )
+    
+  </script>
+</body>
+</html>
